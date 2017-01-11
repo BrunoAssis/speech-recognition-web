@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    INTERIM: <span class="interim">INTERIM</span><br />
+    FINAL: <span class="final">FINAL</span>
+    <script>
+      if (!('webkitSpeechRecognition' in window)) {
+        console.log('Unsupported browser');
+      } else {
+        console.log('Supported browser');
+        
+        var recognition = new webkitSpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.lang = 'pt-BR';
+
+        // recognition.onstart = function() { ... }
+        recognition.onresult = function(event) {
+          var interim_transcript = '';
+          var final_transcript = '';
+          var interim_span = document.querySelector('.interim');
+          var final_span = document.querySelector('.final');
+
+          for (var i = event.resultIndex; i < event.results.length; ++i) {
+            if (event.results[i].isFinal) {
+              final_transcript += event.results[i][0].transcript;
+            } else {
+              interim_transcript += event.results[i][0].transcript;
+            }
+          }
+
+          final_span.innerHTML = final_transcript;
+          interim_span.innerHTML = interim_transcript;
+        };
+
+        recognition.start();
+      }
+    </script>
+  </body>
+</html>
